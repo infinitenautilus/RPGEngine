@@ -1,4 +1,5 @@
-﻿using RPGEngine.Global.GameObjects;
+﻿using RPGEngine.Global.Communications;
+using RPGEngine.Global.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace RPGEngine.Global.Heartbeat
         public static DateTime LastTickTime;
 
         public List<GameObject> GameObjectsToPulse { get; set; } = new();
+        public List<GameClient> GameClientsToPulse { get; set; } = new();
 
         private HeartbeatManager()
         {
@@ -25,9 +27,14 @@ namespace RPGEngine.Global.Heartbeat
 
         public void Heartbeat()
         {
-            foreach(GameObject gameObject in GameObjectsToPulse.ToArray())
+            for (int i = 0;i <  GameObjectsToPulse.Count;i++)
             {
-                gameObject.Pulse();
+                GameObjectsToPulse[i].Pulse();
+            }
+            
+            for(int i = 0; i < GameClientsToPulse.Count;i++)
+            {
+                GameClientsToPulse[i].Pulse();
             }
 
             TickCount++;

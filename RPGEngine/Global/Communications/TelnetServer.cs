@@ -53,13 +53,14 @@ namespace RPGEngine.Global.Communications
                     {
                         string cleanedData = CleanTelnetInput(receivedData);
 
-                        if(cleanedData == "quit")
+                        if (cleanedData.Equals("quit"))
                         {
                             Console.WriteLine($"Client {client} requested to quit.");
                             client.CloseConnection();
                             clients.Remove(client);
                             continue;
                         }
+
                         Console.WriteLine($"Received raw data: {receivedData}");
                         Console.WriteLine($"Cleaned data: {cleanedData}");
                     }
@@ -96,7 +97,7 @@ namespace RPGEngine.Global.Communications
                 //}
             }
 
-            return cleaned.ToString();
+            return cleaned.ToString().Trim();
         }
 
         public List<GameClient> GetClients()

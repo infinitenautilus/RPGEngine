@@ -6,8 +6,6 @@ namespace RPGEngine.Global.Loader
 {
     public class Launcher
     {
-        private const int GAMETICKINTERVAL = 1000;
-        
         private List<TcpClient> clients = new();
 
         public static void Main(string[] args)
@@ -19,8 +17,6 @@ namespace RPGEngine.Global.Loader
 
         private void StartSequence()
         {
-            Console.WriteLine("Emergency umbrella.");
-
             GameServer server = new GameServer();
             
             server.Start();

@@ -65,6 +65,11 @@ namespace RPGEngine.Global.Communications
             TCPClient.Close();
 
         }
+
+        public void Pulse()
+        {
+
+        }
     }
 
 
