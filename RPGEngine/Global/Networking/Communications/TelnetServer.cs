@@ -80,9 +80,6 @@ namespace RPGEngine.Global.Networking.Communications
                                     GameCommandHandler.Instance.ExecuteCommand(commandName, args, commandActor);
                                 }
                             }
-
-                            Console.WriteLine($"Received raw data: {receivedData}");
-                            Console.WriteLine($"Cleaned data: {cleanedData}");
                         }
 
                     }

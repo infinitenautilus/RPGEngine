@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="asdf\" />
     <Folder Include="World\GameObjects\" />
     <Folder Include="World\GameComponents\" />
   </ItemGroup>
