@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RPGEngine.Global.GameObjects;
 
-namespace RPGEngine.Global.GameComponents
+namespace RPGEngine.Global.GameObjects.GameComponents
 {
-    public class LivingInventory : GameComponent
+    public class InanimateInventory : GameComponent
     {
         public List<GameObject> MyGameObjects { get; set; } = new();
-        
-        public LivingInventory()
+
+        public InanimateInventory()
         {
-            ComponentName = "Living Inventory";
+            ComponentName = "Inanimate Inventory";
         }
 
         public override void Pulse()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

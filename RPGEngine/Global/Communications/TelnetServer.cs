@@ -1,4 +1,8 @@
-﻿using System;
+﻿using RPGEngine.Global.GameCommands;
+using RPGEngine.Global.GameObjects;
+using RPGEngine.Global.Logging;
+using RPGEngine.Global.Networking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -24,7 +28,7 @@ namespace RPGEngine.Global.Communications
         public void Start()
         {
             listener.Start();
-            Console.WriteLine("Started listening...");
+            Console.WriteLine("Started listening for connections...");
         }
 
         public void AcceptConnections()
@@ -39,7 +43,7 @@ namespace RPGEngine.Global.Communications
 
                 Console.WriteLine($"Client connected: {client}.");
                 
-                gameClient.SendMessage("Please enter your username: ");
+                gameClient.SendMessage($"Welcome to Taerin's Whisper...{Environment.NewLine} {Environment.NewLine}");
             }
         }
 
@@ -62,12 +66,32 @@ namespace RPGEngine.Global.Communications
                         {
                             string cleanedData = CleanTelnetInput(receivedData);
 
+                            //Extract the first word as the command name
+                            string commandName = cleanedData.Split(' ')[0];
+
+                            if(GameCommandHandler.Instance.CommandExists(commandName))
+                            {
+                                string[] args = cleanedData.Split(' ').Skip(1).ToArray();
+
+                                Actor? commandActor = null;
+
+                                if(PlayerManager.Instance.PlayersActorDictionary.TryGetValue(client, out commandActor))
+                                {
+                                    GameCommandHandler.Instance.ExecuteCommand(commandName, args, commandActor);
+                                }
+                            }
+
                             if (cleanedData.Equals("quit"))
                             {
-                                Console.WriteLine($"Client {client} requested to quit.");
-                                client.CloseConnection();
-                                clients.Remove(client);
-                                continue;
+                                IPEndPoint? remoteIpEndPoint = client.TCPClient.Client.RemoteEndPoint as IPEndPoint;
+
+                                if (remoteIpEndPoint != null)
+                                {
+                                    Console.WriteLine($"Client {remoteIpEndPoint.ToString()} requested to quit.");
+                                    client.CloseConnection();
+                                    clients.Remove(client);
+                                    continue;
+                                }
                             }
 
                             Console.WriteLine($"Received raw data: {receivedData}");
@@ -78,7 +102,7 @@ namespace RPGEngine.Global.Communications
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine($"Error with client {ex.Message}");
+                    Troubleshooter.Instance.Log($"Error with client {client.Name}:: {ex.Message}");
                     client.CloseConnection();
                     clients.Remove(client);
                 }

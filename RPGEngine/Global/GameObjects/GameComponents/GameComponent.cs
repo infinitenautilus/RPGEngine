@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPGEngine.Global.GameComponents
+namespace RPGEngine.Global.GameObjects.GameComponents
 {
     public abstract class GameComponent
     {

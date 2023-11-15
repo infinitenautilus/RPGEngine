@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPGEngine.Global.GameObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,20 +23,41 @@ namespace RPGEngine.Global.Communications
                 case ClientState.Connecting:
                     client.SendMessage("Enter Username: ");
                     client.CurrentState = ClientState.Authenticating;
+                    
                     break;
 
                 case ClientState.Authenticating:
+                    
+                    if(string.IsNullOrEmpty(data) || string.IsNullOrWhiteSpace(data))
+                    {
+                        client.CurrentState = ClientState.Connecting;
+                        break;
+                    }
+
                     client.Name = data.Trim();
                     client.SendMessage("Enter Password: ");
                     client.CurrentState = ClientState.Authenticated;
+                    
                     break;
+
                 case ClientState.Authenticated:
                     //password validation will go here
-                    client.SendMessage($"Welcome {client.Name}!");
+                    
+                    if(string.IsNullOrEmpty(data))
+                    {
+                        client.CurrentState = ClientState.Authenticating;
+                        break;
+                    }
+
+                    client.SendMessage($"Welcome {client.Name}!{Environment.NewLine}");
                     client.CurrentState = ClientState.Playing;
+                    Player player = new(client);
+                    
                     break;
+
                 default:
                     client.CurrentState = ClientState.Connecting;
+                    
                     break;
             }
         }

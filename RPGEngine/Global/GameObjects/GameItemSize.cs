@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPGEngine.Global.Enum
+namespace RPGEngine.Global.GameObjects
 {
     public enum GameItemSize
     {
