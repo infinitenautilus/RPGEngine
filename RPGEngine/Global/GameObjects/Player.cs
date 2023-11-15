@@ -13,7 +13,7 @@ namespace RPGEngine.Global.GameObjects
     public class Player : Actor
     {
         public GameClient MyClient { get; } 
-        private GameRoom MyRoom { get; set; }
+        private GameRoom? MyRoom { get; set; }
 
         public Player(GameClient client) : base()
         {
@@ -21,7 +21,7 @@ namespace RPGEngine.Global.GameObjects
 
             HealthComponent.MaxHealth = 1000;
             HealthComponent.CurrentHealth = 1000;
-            MyRoom = new();
+
             PlayerManager.Instance.AddPlayerToConnected(this, client);
         }
 
@@ -36,12 +36,22 @@ namespace RPGEngine.Global.GameObjects
 
         public GameRoom GetCurrentRoom()
         {
-            return MyRoom;
+            if(MyRoom != null)
+            {
+                return MyRoom;
+            }
+            else
+            {
+                BlacksmithForge alvin = new();
+
+                return alvin;
+            }
+
         }
 
         public void SetCurrentRoom(GameRoom room)
         {
-
+            MyRoom = room;
         }
 
         public IPEndPoint? MyIpAddress()
