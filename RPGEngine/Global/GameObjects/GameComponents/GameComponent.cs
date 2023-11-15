@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPGEngine.Global.Heartbeat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace RPGEngine.Global.GameObjects.GameComponents
 
         public GameComponent()
         {
-
+            
         }
 
         public abstract void Pulse();

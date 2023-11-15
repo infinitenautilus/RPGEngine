@@ -1,5 +1,6 @@
-﻿using RPGEngine.Global.Communications;
-using RPGEngine.Global.Networking;
+﻿using RPGEngine.Global.Networking;
+using RPGEngine.Global.Networking.Communications;
+using RPGEngine.World.ArlithCity.Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace RPGEngine.Global.GameObjects
     public class Player : Actor
     {
         public GameClient MyClient { get; } 
+        private GameRoom MyRoom { get; set; }
 
         public Player(GameClient client) : base()
         {
@@ -19,13 +21,27 @@ namespace RPGEngine.Global.GameObjects
 
             HealthComponent.MaxHealth = 1000;
             HealthComponent.CurrentHealth = 1000;
-            
+            MyRoom = new();
             PlayerManager.Instance.AddPlayerToConnected(this, client);
         }
 
         public override void Pulse()
         {
-            base.Pulse();
+            if (MyClient != null)
+            {
+                base.Pulse();
+            }
+
+        }
+
+        public GameRoom GetCurrentRoom()
+        {
+            return MyRoom;
+        }
+
+        public void SetCurrentRoom(GameRoom room)
+        {
+
         }
 
         public IPEndPoint? MyIpAddress()

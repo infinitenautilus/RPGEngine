@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RPGEngine.Global.GameObjects.GameComponents;
+using RPGEngine.Global.Heartbeat;
 using RPGEngine.Global.Logging;
 
 namespace RPGEngine.Global.GameObjects
@@ -27,7 +28,7 @@ namespace RPGEngine.Global.GameObjects
 
         public override void Pulse()
         {
-            
+            Console.WriteLine($"PULSE() called on Actor {ShortName}");
         }
 
         private void AddComponents()

@@ -1,4 +1,4 @@
-﻿namespace RPGEngine.Global.Communications
+﻿namespace RPGEngine.Global.Networking.Communications
 {
     public enum ClientState
     {

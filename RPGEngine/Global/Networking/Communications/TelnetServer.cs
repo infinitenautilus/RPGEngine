@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPGEngine.Global.Communications
+namespace RPGEngine.Global.Networking.Communications
 {
     public class TelnetServer
     {
@@ -33,16 +33,16 @@ namespace RPGEngine.Global.Communications
 
         public void AcceptConnections()
         {
-            while(listener.Pending())
+            while (listener.Pending())
             {
                 TcpClient client = listener.AcceptTcpClient();
-                
+
                 GameClient gameClient = new(client);
 
                 clients.Add(gameClient);
 
                 Console.WriteLine($"Client connected: {client}.");
-                
+
                 gameClient.SendMessage($"Welcome to Taerin's Whisper...{Environment.NewLine} {Environment.NewLine}");
             }
         }
@@ -57,7 +57,7 @@ namespace RPGEngine.Global.Communications
 
                     if (!string.IsNullOrEmpty(receivedData))
                     {
-                        if(client.CurrentState != ClientState.Playing)
+                        if (client.CurrentState != ClientState.Playing)
                         {
                             LoginSessionManager loginManager = new(client);
                             loginManager.ProcessLogin(receivedData);
@@ -69,42 +69,38 @@ namespace RPGEngine.Global.Communications
                             //Extract the first word as the command name
                             string commandName = cleanedData.Split(' ')[0];
 
-                            if(GameCommandHandler.Instance.CommandExists(commandName))
+                            if (GameCommandHandler.Instance.CommandExists(commandName))
                             {
                                 string[] args = cleanedData.Split(' ').Skip(1).ToArray();
 
                                 Actor? commandActor = null;
 
-                                if(PlayerManager.Instance.PlayersActorDictionary.TryGetValue(client, out commandActor))
+                                if (PlayerManager.Instance.PlayersActorDictionary.TryGetValue(client, out commandActor))
                                 {
                                     GameCommandHandler.Instance.ExecuteCommand(commandName, args, commandActor);
-                                }
-                            }
-
-                            if (cleanedData.Equals("quit"))
-                            {
-                                IPEndPoint? remoteIpEndPoint = client.TCPClient.Client.RemoteEndPoint as IPEndPoint;
-
-                                if (remoteIpEndPoint != null)
-                                {
-                                    Console.WriteLine($"Client {remoteIpEndPoint.ToString()} requested to quit.");
-                                    client.CloseConnection();
-                                    clients.Remove(client);
-                                    continue;
                                 }
                             }
 
                             Console.WriteLine($"Received raw data: {receivedData}");
                             Console.WriteLine($"Cleaned data: {cleanedData}");
                         }
-                        
+
                     }
+                }
+                catch (SocketException ex)
+                {
+                    Troubleshooter.Instance.Log($"Socket Error with client in ProcessNetworkData() :: {ex.Message}");
+                    RemoveClient(client);
+                }
+                catch(ObjectDisposedException ex)
+                {
+                    Console.WriteLine($"Client terminated session, I will dispose of it now. {ex.Message}");
+                    RemoveClient(client);
                 }
                 catch(Exception ex)
                 {
-                    Troubleshooter.Instance.Log($"Error with client {client.Name}:: {ex.Message}");
-                    client.CloseConnection();
-                    clients.Remove(client);
+                    Troubleshooter.Instance.Log($"Error with TelnetServer in ProcessNetworkData() :: {ex.Message}");
+                    RemoveClient(client);
                 }
             }
         }
@@ -113,11 +109,11 @@ namespace RPGEngine.Global.Communications
         {
             StringBuilder cleaned = new();
 
-            for(int i = 0; i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
                 char c = input[i];
 
-                if(c >= 32 && c <= 126)
+                if (c >= 32 && c <= 126)
                 {
                     cleaned.Append(c);
                 }
@@ -128,7 +124,7 @@ namespace RPGEngine.Global.Communications
                 }
                 //else if (c == '\n')
                 //{
-                  //  cleaned.Append(Environment.NewLine);
+                //  cleaned.Append(Environment.NewLine);
                 //}
             }
 
@@ -147,6 +143,7 @@ namespace RPGEngine.Global.Communications
 
         public void RemoveClient(GameClient c)
         {
+            c.CloseConnection();
             clients.Remove(c);
         }
 

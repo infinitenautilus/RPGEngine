@@ -1,4 +1,4 @@
-﻿using RPGEngine.Global.Communications;
+﻿using RPGEngine.Global.Networking.Communications;
 using RPGEngine.Global.GameObjects;
 using RPGEngine.Global.GameObjects.GameComponents;
 using System;
@@ -29,10 +29,11 @@ namespace RPGEngine.Global.Heartbeat
         {
             for (int i = 0;i <  GameObjectsToPulse.Count;i++)
             {
-                foreach(GameComponent comp in GameObjectsToPulse[i].MyGameComponents.ToArray())
+                foreach(GameComponent comp in GameObjectsToPulse[i].MyGameComponents)
                 {
                     comp.Pulse();
                 }
+
                 GameObjectsToPulse[i].Pulse();
             }
             

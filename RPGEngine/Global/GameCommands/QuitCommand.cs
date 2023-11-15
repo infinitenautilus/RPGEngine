@@ -1,6 +1,8 @@
 ﻿using RPGEngine.Global.GameObjects;
+using RPGEngine.Global.Heartbeat;
 using RPGEngine.Global.Logging;
 using RPGEngine.Global.Networking;
+using RPGEngine.Global.Networking.Communications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +26,9 @@ namespace RPGEngine.Global.GameCommands
             {
                 try
                 {
+                    TelnetServer.Instance.RemoveClient(player.MyClient);
                     PlayerManager.Instance.RemovePlayerFromConnected(player);
-                    player.MyClient.CloseConnection();
+                    HeartbeatManager.Instance.GameObjectsToPulse.Remove(player);
                 }
                 catch(Exception ex)
                 {

@@ -1,5 +1,5 @@
-﻿using RPGEngine.Global.Communications;
-using RPGEngine.Global.GameObjects;
+﻿using RPGEngine.Global.GameObjects;
+using RPGEngine.Global.Networking.Communications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +27,13 @@ namespace RPGEngine.Global.Networking
         {
             playersConnected.Add(player.ShortName, client);
             PlayersActorDictionary.Add(client, player);
+            TelnetServer.Instance.AddClient(player.MyClient);
         }
         
         public void RemovePlayerFromConnected(Player player)
         {
             playersConnected.Remove(player.ShortName);
             PlayersActorDictionary.Remove(player.MyClient);
-            
         }
 
     }

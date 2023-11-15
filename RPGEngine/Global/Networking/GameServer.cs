@@ -1,5 +1,5 @@
-﻿using RPGEngine.Global.Communications;
-using RPGEngine.Global.Heartbeat;
+﻿using RPGEngine.Global.Heartbeat;
+using RPGEngine.Global.Networking.Communications;
 using System;
 using System.Collections.Generic;
 using System.Linq;

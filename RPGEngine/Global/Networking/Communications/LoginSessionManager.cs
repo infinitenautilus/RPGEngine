@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPGEngine.Global.Communications
+namespace RPGEngine.Global.Networking.Communications
 {
     public class LoginSessionManager
     {
@@ -18,17 +18,17 @@ namespace RPGEngine.Global.Communications
 
         public void ProcessLogin(string data)
         {
-            switch(client.CurrentState)
+            switch (client.CurrentState)
             {
                 case ClientState.Connecting:
                     client.SendMessage("Enter Username: ");
                     client.CurrentState = ClientState.Authenticating;
-                    
+
                     break;
 
                 case ClientState.Authenticating:
-                    
-                    if(string.IsNullOrEmpty(data) || string.IsNullOrWhiteSpace(data))
+
+                    if (string.IsNullOrEmpty(data) || string.IsNullOrWhiteSpace(data))
                     {
                         client.CurrentState = ClientState.Connecting;
                         break;
@@ -37,13 +37,13 @@ namespace RPGEngine.Global.Communications
                     client.Name = data.Trim();
                     client.SendMessage("Enter Password: ");
                     client.CurrentState = ClientState.Authenticated;
-                    
+
                     break;
 
                 case ClientState.Authenticated:
                     //password validation will go here
-                    
-                    if(string.IsNullOrEmpty(data))
+
+                    if (string.IsNullOrEmpty(data))
                     {
                         client.CurrentState = ClientState.Authenticating;
                         break;
@@ -52,12 +52,12 @@ namespace RPGEngine.Global.Communications
                     client.SendMessage($"Welcome {client.Name}!{Environment.NewLine}");
                     client.CurrentState = ClientState.Playing;
                     Player player = new(client);
-                    
+
                     break;
 
                 default:
                     client.CurrentState = ClientState.Connecting;
-                    
+
                     break;
             }
         }

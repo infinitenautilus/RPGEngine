@@ -1,10 +1,11 @@
-﻿using RPGEngine.Global.Communications;
+﻿using RPGEngine.Global.Networking.Communications;
 using RPGEngine.Global.GameCommands;
+using RPGEngine.Global.Loader;
 using RPGEngine.Global.Logging;
 using System;
 using System.Net.Sockets;
 
-namespace RPGEngine.Global.Loader
+namespace RPGEngine.Global
 {
     public class Launcher
     {
@@ -12,7 +13,7 @@ namespace RPGEngine.Global.Loader
         public static void Main(string[] args)
         {
             Launcher launcher = new Launcher();
-            
+
             launcher.StartSequence();
         }
 

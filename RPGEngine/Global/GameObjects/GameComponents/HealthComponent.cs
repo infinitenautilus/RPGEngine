@@ -8,21 +8,25 @@ namespace RPGEngine.Global.GameObjects.GameComponents
 {
     public class HealthComponent : GameComponent
     {
-        private int current = 100, max = 100;
+        private int currentHealth;
 
         public int CurrentHealth
         {
-            get
+            get 
             {
-                current = Math.Max(0, Math.Min(current, max));
+                if (currentHealth > MaxHealth) return MaxHealth;
 
-                return current;
+                return currentHealth;
             }
 
             set
             {
-                current = value;
+                if (value > MaxHealth) value = MaxHealth;
+                if (value < 0) value = 0;
+
+                currentHealth = value;
             }
+
         }
 
         public int MaxHealth { get; set; }
@@ -35,7 +39,12 @@ namespace RPGEngine.Global.GameObjects.GameComponents
 
         public override void Pulse()
         {
-            current++;
+            if(CurrentHealth < MaxHealth)
+            {
+                CurrentHealth++;
+            }
+
+            Console.WriteLine($"Pulse on health component called: {CurrentHealth}");
         }
     }
 }

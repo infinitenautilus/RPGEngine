@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RPGEngine.Global.GameObjects.GameComponents;
+using RPGEngine.Global.Heartbeat;
 
 namespace RPGEngine.Global.GameObjects
 {
@@ -21,6 +22,7 @@ namespace RPGEngine.Global.GameObjects
         public GameObject()
         {
             _id++;
+            HeartbeatManager.Instance.GameObjectsToPulse.Add(this);
         }
 
         public GameObject(string shortname, string description)
