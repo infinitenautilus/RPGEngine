@@ -1,4 +1,5 @@
 ﻿using RPGEngine.Global.GameObjects;
+using RPGEngine.World;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,12 @@ namespace RPGEngine.Global.Networking.Communications
 
                     client.SendMessage($"Welcome {client.Name}!{Environment.NewLine}");
                     client.CurrentState = ClientState.Playing;
+
                     Player player = new(client);
+                    
+                    player.ShortName = client.Name;
+                    
+                    player.SetCurrentRoom(TheVoid.Instance);
 
                     break;
 

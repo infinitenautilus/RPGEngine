@@ -23,9 +23,11 @@ namespace RPGEngine.Global
 
             QuitCommand quitcmd = new();
             ScoreCommand scorecmd = new();
+            ChatCommand chatcmd = new();
 
             GameCommandHandler.Instance.RegisterCommand(quitcmd);
             GameCommandHandler.Instance.RegisterCommand(scorecmd);
+            GameCommandHandler.Instance.RegisterCommand(chatcmd);
 
             GameServer.Instance.Start();
         }

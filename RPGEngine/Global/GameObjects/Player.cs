@@ -1,5 +1,6 @@
 ﻿using RPGEngine.Global.Networking;
 using RPGEngine.Global.Networking.Communications;
+using RPGEngine.World;
 using RPGEngine.World.ArlithCity.Rooms;
 using System;
 using System.Collections.Generic;
@@ -42,9 +43,7 @@ namespace RPGEngine.Global.GameObjects
             }
             else
             {
-                BlacksmithForge alvin = new();
-
-                return alvin;
+                return TheVoid.Instance;
             }
 
         }

@@ -15,5 +15,10 @@ namespace RPGEngine.World.ArlithCity.Rooms
             SetLongDescription("A magnificent forge sits aside a large tree stump with an anvil mounted atop it.  A large pair of bellows jut from either side of the great stone forge." +
                 "Tongs, hammers, and other various tools adorn the walls.  You can see through the doorway, Central Avenue bustling to the south.");
         }
+
+        public override void Pulse()
+        {
+            base.Pulse();
+        }
     }
 }
