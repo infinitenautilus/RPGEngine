@@ -1,4 +1,5 @@
 ﻿using RPGEngine.Global.Communications;
+using RPGEngine.Global.Heartbeat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,8 @@ namespace RPGEngine.Global.Loader
             {
                 TelnetServer.Instance.AcceptConnections();
                 TelnetServer.Instance.ProcessNetworkData();
-                //heartbeatManager.Pulse();
+
+                HeartbeatManager.Instance.Heartbeat();
 
                 Thread.Sleep(TickInterval);
             }

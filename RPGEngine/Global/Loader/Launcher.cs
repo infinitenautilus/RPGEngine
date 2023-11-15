@@ -6,7 +6,6 @@ namespace RPGEngine.Global.Loader
 {
     public class Launcher
     {
-        private List<TcpClient> clients = new();
 
         public static void Main(string[] args)
         {
@@ -20,7 +19,6 @@ namespace RPGEngine.Global.Loader
             GameServer server = new GameServer();
             
             server.Start();
-
         }
 
     }

@@ -38,6 +38,8 @@ namespace RPGEngine.Global.Communications
                 clients.Add(gameClient);
 
                 Console.WriteLine($"Client connected: {client}.");
+                
+                gameClient.SendMessage("Please enter your username: ");
             }
         }
 
@@ -51,25 +53,34 @@ namespace RPGEngine.Global.Communications
 
                     if (!string.IsNullOrEmpty(receivedData))
                     {
-                        string cleanedData = CleanTelnetInput(receivedData);
-
-                        if (cleanedData.Equals("quit"))
+                        if(client.CurrentState != ClientState.Playing)
                         {
-                            Console.WriteLine($"Client {client} requested to quit.");
-                            client.CloseConnection();
-                            clients.Remove(client);
-                            continue;
+                            LoginSessionManager loginManager = new(client);
+                            loginManager.ProcessLogin(receivedData);
                         }
+                        else
+                        {
+                            string cleanedData = CleanTelnetInput(receivedData);
 
-                        Console.WriteLine($"Received raw data: {receivedData}");
-                        Console.WriteLine($"Cleaned data: {cleanedData}");
+                            if (cleanedData.Equals("quit"))
+                            {
+                                Console.WriteLine($"Client {client} requested to quit.");
+                                client.CloseConnection();
+                                clients.Remove(client);
+                                continue;
+                            }
+
+                            Console.WriteLine($"Received raw data: {receivedData}");
+                            Console.WriteLine($"Cleaned data: {cleanedData}");
+                        }
+                        
                     }
                 }
                 catch(Exception ex)
                 {
                     Console.WriteLine($"Error with client {ex.Message}");
+                    client.CloseConnection();
                     clients.Remove(client);
-                    client.TCPClient.Close();
                 }
             }
         }

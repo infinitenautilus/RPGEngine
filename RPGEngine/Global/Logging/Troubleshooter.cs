@@ -19,6 +19,7 @@ namespace RPGEngine.Global.Logging
         private Troubleshooter()
         {
             InitializeLogDirectory();
+            ClearLog();
         }
 
         private void InitializeLogDirectory()
@@ -27,12 +28,23 @@ namespace RPGEngine.Global.Logging
             {
                 Directory.CreateDirectory(PATHTOLOGDIRECTORY);
             }
+            
         }
 
         private void ClearLog()
         {
-            File.Delete(logFilePath);
-            File.Create(logFilePath).Close();
+            if (File.Exists(logFilePath))
+            {
+                try
+                {
+                    File.Delete(logFilePath);
+                    File.Create(logFilePath).Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"ClearLog called and failed:: {ex.Message}.");
+                }
+            }
         }
 
         public void Log(string message)

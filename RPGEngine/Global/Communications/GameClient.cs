@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RPGEngine.Global.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -13,6 +14,8 @@ namespace RPGEngine.Global.Communications
         
         public string Name { get; set; }
 
+        public ClientState CurrentState { get; set; } = ClientState.Connecting;
+
         public bool IsConnected
         {
             get
@@ -21,8 +24,9 @@ namespace RPGEngine.Global.Communications
                 {
                     return !(TCPClient.Client.Poll(1, SelectMode.SelectRead) && TCPClient.Client.Available == 0);
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Troubleshooter.Instance.Log($"Failure found in IsConnected:: {ex.Message}.");
                     return false;
                 }
             }
@@ -30,6 +34,7 @@ namespace RPGEngine.Global.Communications
 
         public GameClient(TcpClient tcpclient)
         {
+            
             TCPClient = tcpclient;
             Name = "Guest";
         }
