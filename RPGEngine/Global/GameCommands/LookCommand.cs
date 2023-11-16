@@ -19,7 +19,10 @@ namespace RPGEngine.Global.GameCommands
 
         public void ExecuteGameCommand(string[] args, Actor actor)
         {
-            
+            if(actor is Player player)
+            {
+                player.MyClient.SendMessage("You look...");
+            }
         }
     }
 }

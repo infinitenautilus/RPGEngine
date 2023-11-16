@@ -31,7 +31,7 @@ namespace RPGEngine.Global.GameCommands
                     return;
                 }
             
-                output.AppendLine($"Hp: {hcomp.CurrentHealth} / {hcomp.MaxHealth}");
+                output.Append($"Hp: {hcomp.CurrentHealth} / {hcomp.MaxHealth}");
                 
                 player.MyClient.SendMessage(output.ToString());
             }

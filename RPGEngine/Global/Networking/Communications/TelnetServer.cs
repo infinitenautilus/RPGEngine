@@ -12,25 +12,42 @@ using System.Threading.Tasks;
 
 namespace RPGEngine.Global.Networking.Communications
 {
+    /// <summary>
+    /// Handles network communications and client management for the game.
+    /// This includes listening for new connections, processing incoming data,
+    /// and managing active client sessions.
+    /// </summary>
     public class TelnetServer
     {
+        //Singleton Instance of the TelnetServer
         private static readonly Lazy<TelnetServer> _instance = new Lazy<TelnetServer>(() => new TelnetServer(23));
         public static readonly TelnetServer Instance = _instance.Value;
 
-        private TcpListener listener;
-        private List<GameClient> clients = new();
+        private TcpListener listener; // Listens for incoming TCP Connections
+        private List<GameClient> clients = new(); // Holds list of connected clients
 
+        /// <summary>
+        /// Initializes a new instance of the Telnet server listening on the specified port.
+        /// </summary>
+        /// <param name="port">The port on which the server will listen.</param>
         public TelnetServer(int port)
         {
             listener = new TcpListener(IPAddress.Any, port);
         }
 
+        /// <summary>
+        /// Starts the server listening for new connections.
+        /// </summary>
         public void Start()
         {
             listener.Start();
             Console.WriteLine("Started listening for connections...");
         }
 
+        /// <summary>
+        /// Accepts new connections and adds them to the server's list of managed clients.
+        /// This method should be called repeatedly to ensure new clients are processed.
+        /// </summary>
         public void AcceptConnections()
         {
             while (listener.Pending())
@@ -47,8 +64,13 @@ namespace RPGEngine.Global.Networking.Communications
             }
         }
 
+        /// <summary>
+        /// Processes incoming network data from all connected clients.
+        /// It handles different client states and executes commands or login proceedures.
+        /// </summary>
         public void ProcessNetworkData()
         {
+
             foreach (GameClient client in clients.ToArray())
             {
                 try
@@ -59,49 +81,37 @@ namespace RPGEngine.Global.Networking.Communications
                     {
                         if (client.CurrentState != ClientState.Playing)
                         {
-                            LoginSessionManager loginManager = new(client);
-                            loginManager.ProcessLogin(receivedData);
+                            client.LoginManager.ProcessLogin(receivedData);
                         }
                         else
                         {
-                            string cleanedData = CleanTelnetInput(receivedData);
-
-                            //Extract the first word as the command name
-                            string commandName = cleanedData.Split(' ')[0];
-
-                            if (GameCommandHandler.Instance.CommandExists(commandName))
-                            {
-                                string[] args = cleanedData.Split(' ').Skip(1).ToArray();
-
-                                Actor? commandActor = null;
-
-                                if (PlayerManager.Instance.PlayersActorDictionary.TryGetValue(client, out commandActor))
-                                {
-                                    GameCommandHandler.Instance.ExecuteCommand(commandName, args, commandActor);
-                                }
-                            }
+                            ProcessClientCommand(client, receivedData);
                         }
 
                     }
                 }
                 catch (SocketException ex)
                 {
-                    Troubleshooter.Instance.Log($"Socket Error with client in ProcessNetworkData() :: {ex.Message}");
-                    RemoveClient(client);
+                    TroubleshootConnection("Socket Error", client, ex);
                 }
                 catch(ObjectDisposedException ex)
                 {
-                    Console.WriteLine($"Client terminated session, I will dispose of it now. {ex.Message}");
-                    RemoveClient(client);
+                    TroubleshootConnection("Client terminated session", client, ex);
                 }
                 catch(Exception ex)
                 {
-                    Troubleshooter.Instance.Log($"Error with TelnetServer in ProcessNetworkData() :: {ex.Message}");
-                    RemoveClient(client);
+                    TroubleshootConnection("General Error", client, ex);
+                    
                 }
             }
         }
 
+        /// <summary>
+        /// Cleans the input received from Telnet clients by removing non-printable characters
+        /// and handling carriage return-line feed combinations.
+        /// </summary>
+        /// <param name="input">The raw input string received from the client.</param>
+        /// <returns>A cleaned string with only printable characters and proper new lines.</returns>
         private string CleanTelnetInput(string input)
         {
             StringBuilder cleaned = new();
@@ -128,25 +138,71 @@ namespace RPGEngine.Global.Networking.Communications
             return cleaned.ToString().Trim();
         }
 
+        /// <summary>
+        /// Retrieves the current list of connected clients.
+        /// </summary>
+        /// <returns>A list of connected GameClient instances.</returns>
         public List<GameClient> GetClients()
         {
             return clients;
         }
 
+        /// <summary>
+        /// Adds a client to the server's list of managed clients.
+        /// </summary>
+        /// <param name="c">The GameClient to add.</param>
         public void AddClient(GameClient c)
         {
             clients.Add(c);
         }
 
+        /// <summary>
+        /// Removes a client from the server, closing their connection and removing them from the list.
+        /// </summary>
+        /// <param name="c">The GameClient to remove.</param>
         public void RemoveClient(GameClient c)
         {
             c.CloseConnection();
             clients.Remove(c);
         }
 
+        /// <summary>
+        /// Checks if a specific client is currently managed by the server.
+        /// </summary>
+        /// <param name="c">The GameClient to check for.</param>
+        /// <returns>True if the client is managed by the server, false otherwise.</returns>
         public bool ContainsClient(GameClient c)
         {
             return clients.Contains(c);
+        }
+
+        /// <summary>
+        /// Processes a command received from a client. It extracts the command name and arguments,
+        /// checks if the command exists, and executes it if so. Otherwise, sends an error message back.
+        /// </summary>
+        /// <param name="client">The client from whom the command was received.</param>
+        /// <param name="receivedData">The raw data received from the client.</param>
+        private void ProcessClientCommand(GameClient client, string receivedData)
+        {
+            string cleanedData = CleanTelnetInput(receivedData);
+            string commandName = cleanedData.Split(' ')[0];
+            string[] args = cleanedData.Split(' ').Skip(1).ToArray();
+
+            if(GameCommandHandler.Instance.CommandExists(commandName))
+            {
+                if (PlayerManager.Instance.PlayersActorDictionary.TryGetValue(client, out Actor? commandActor))
+                    GameCommandHandler.Instance.ExecuteCommand(commandName, args, commandActor);
+            }
+            else
+            {
+                client.SendMessage("I do not recognize that command.");
+            }
+        }
+
+        private void TroubleshootConnection(string message, GameClient client, Exception ex)
+        {
+            Troubleshooter.Instance.Log($"{message} with client in ProcessNetworkData() :: {ex.Message}");
+            RemoveClient(client);
         }
     }
 }

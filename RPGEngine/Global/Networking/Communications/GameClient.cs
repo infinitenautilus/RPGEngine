@@ -18,6 +18,8 @@ namespace RPGEngine.Global.Networking.Communications
 
         private bool isconnected;
 
+        public LoginSessionManager LoginManager { get; private set; }
+
         public bool IsConnected
         {
             get
@@ -42,15 +44,19 @@ namespace RPGEngine.Global.Networking.Communications
 
             TCPClient = tcpclient;
             Name = "Guest";
+
+            LoginManager = new LoginSessionManager(this);
         }
 
         public void SendMessage(string message)
         {
             NetworkStream stream = TCPClient.GetStream();
+            
+            message += Environment.NewLine;
+
             byte[] data = Encoding.ASCII.GetBytes(message);
 
             stream.Write(data, 0, data.Length);
-            
         }
 
         public string? ReceiveData()
@@ -60,9 +66,7 @@ namespace RPGEngine.Global.Networking.Communications
             if (stream.DataAvailable)
             {
                 byte[] buffer = new byte[1024];
-
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
-
                 string receivedData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                 return receivedData;
