@@ -19,13 +19,19 @@ namespace RPGEngine.Global.Networking.Communications
     /// </summary>
     public class TelnetServer
     {
+        #region Singleton
         //Singleton Instance of the TelnetServer
         private static readonly Lazy<TelnetServer> _instance = new Lazy<TelnetServer>(() => new TelnetServer(23));
         public static readonly TelnetServer Instance = _instance.Value;
+        #endregion
 
+        #region Vars
         private TcpListener listener; // Listens for incoming TCP Connections
         private List<GameClient> clients = new(); // Holds list of connected clients
 
+        #endregion
+
+        #region Constructors
         /// <summary>
         /// Initializes a new instance of the Telnet server listening on the specified port.
         /// </summary>
@@ -35,6 +41,9 @@ namespace RPGEngine.Global.Networking.Communications
             listener = new TcpListener(IPAddress.Any, port);
         }
 
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Starts the server listening for new connections.
         /// </summary>
@@ -199,10 +208,17 @@ namespace RPGEngine.Global.Networking.Communications
             }
         }
 
+        /// <summary>
+        /// Handles troubleshooting for client connections, logging the error and removing the client.
+        /// </summary>
+        /// <param name="message">A descriptive message about the issue encountered.</param>
+        /// <param name="client">The client that experienced the issue.</param>
+        /// <param name="ex">The exception that was thrown.</param>
         private void TroubleshootConnection(string message, GameClient client, Exception ex)
         {
             Troubleshooter.Instance.Log($"{message} with client in ProcessNetworkData() :: {ex.Message}");
             RemoveClient(client);
         }
+        #endregion
     }
 }

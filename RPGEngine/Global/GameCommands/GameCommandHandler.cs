@@ -37,6 +37,7 @@ namespace RPGEngine.Global.GameCommands
                 throw new ArgumentException("Invalid command.");
 
             commands[gameCommand.GameCommandName] = gameCommand;
+            Console.WriteLine($"GameCommand {gameCommand.GameCommandName} registered!");
         }
 
         /// <summary>

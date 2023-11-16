@@ -21,15 +21,22 @@ namespace RPGEngine.Global
         {
             Troubleshooter.Instance.Log("StartSequence() initiated.");
 
+            RegisterCommands();
+            GameServer.Instance.Start();
+        }
+
+        private void RegisterCommands()
+        {
             QuitCommand quitcmd = new();
             ScoreCommand scorecmd = new();
             ChatCommand chatcmd = new();
+            LookCommand lookcmd = new();
 
             GameCommandHandler.Instance.RegisterCommand(quitcmd);
             GameCommandHandler.Instance.RegisterCommand(scorecmd);
             GameCommandHandler.Instance.RegisterCommand(chatcmd);
+            GameCommandHandler.Instance.RegisterCommand(lookcmd);
 
-            GameServer.Instance.Start();
         }
 
     }
