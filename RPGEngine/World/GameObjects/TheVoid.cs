@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RPGEngine.World
+namespace RPGEngine.World.GameObjects
 {
     public class TheVoid : GameRoom
     {

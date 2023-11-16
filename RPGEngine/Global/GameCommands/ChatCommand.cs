@@ -41,7 +41,7 @@ namespace RPGEngine.Global.GameCommands
             foreach (Player p in PlayerManager.Instance.PlayersActorDictionary.Values.ToArray())
             {
                 // Format and send the chat message to each player's client
-                p.MyClient.SendMessage($"[Chat] {p.ShortName}: {message}");
+                p.MyClient.SendMessage($"[Chat] {p.ShortName}: {message}{Environment.NewLine}");
             }
         }
     }

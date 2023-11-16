@@ -1,7 +1,7 @@
 ﻿using RPGEngine.Global.Networking;
 using RPGEngine.Global.Networking.Communications;
-using RPGEngine.World;
 using RPGEngine.World.ArlithCity.Rooms;
+using RPGEngine.World.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

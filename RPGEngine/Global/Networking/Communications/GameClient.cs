@@ -50,6 +50,7 @@ namespace RPGEngine.Global.Networking.Communications
             byte[] data = Encoding.ASCII.GetBytes(message);
 
             stream.Write(data, 0, data.Length);
+            
         }
 
         public string? ReceiveData()
