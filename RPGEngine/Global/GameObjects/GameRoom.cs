@@ -13,9 +13,14 @@ namespace RPGEngine.Global.GameObjects
         public InanimateInventory InventoryComponent { get; } = new();
         public List<RoomExit> RoomExits { get; set; } = new();
 
+        private static int roomId = 0;
+        
+        public int RoomId { get { return roomId; } }
+
         public GameRoom()
         {
             AddGameComponent(InventoryComponent);
+            roomId++;
         }
 
         public override void Pulse()
@@ -36,6 +41,7 @@ namespace RPGEngine.Global.GameObjects
         public void AddExit(string direction, string file)
         {
             RoomExit re = new(direction, file);
+
             RoomExits.Add(re);
         }
 
@@ -43,7 +49,8 @@ namespace RPGEngine.Global.GameObjects
         {
             foreach(RoomExit re in RoomExits)
             {
-                if (re.ExitDirection == direction) return true;
+                if (re.ExitDirection == direction) 
+                    return true;
             }
 
             return false;

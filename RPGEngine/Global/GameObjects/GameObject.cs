@@ -22,7 +22,12 @@ namespace RPGEngine.Global.GameObjects
         public GameObject()
         {
             _id++;
-            HeartbeatManager.Instance.GameObjectsToPulse.Add(this);
+            HeartbeatManager.Instance.Subscribe(this);
+        }
+
+        ~GameObject()
+        {
+            HeartbeatManager.Instance.Unsubscribe(this);
         }
 
         public GameObject(string shortname, string description)

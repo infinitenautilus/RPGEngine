@@ -28,7 +28,7 @@ namespace RPGEngine.Global.GameCommands
                 {
                     TelnetServer.Instance.RemoveClient(player.MyClient);
                     PlayerManager.Instance.RemovePlayerFromConnected(player);
-                    HeartbeatManager.Instance.GameObjectsToPulse.Remove(player);
+                    HeartbeatManager.Instance.Unsubscribe(player);
                 }
                 catch(Exception ex)
                 {

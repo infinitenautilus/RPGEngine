@@ -14,11 +14,10 @@ namespace RPGEngine.Global.Heartbeat
         private static readonly Lazy<HeartbeatManager> _heartbeatManager = new Lazy<HeartbeatManager>(() => new HeartbeatManager());
         public static readonly HeartbeatManager Instance = _heartbeatManager.Value;
 
-        public static int TickCount = 0;
-        
+        public static int TickCount { get; private set; } = 0;
         public static DateTime LastTickTime;
 
-        public List<GameObject> GameObjectsToPulse { get; set; } = new();
+        private HashSet<GameObject> subscribedGameObjects = new();
 
         private HeartbeatManager()
         {
@@ -27,18 +26,33 @@ namespace RPGEngine.Global.Heartbeat
 
         public void Heartbeat()
         {
-            for (int i = 0;i <  GameObjectsToPulse.Count;i++)
-            {
-                foreach(GameComponent comp in GameObjectsToPulse[i].MyGameComponents)
-                {
-                    comp.Pulse();
-                }
+            List<GameObject> temporaryGameObjects = new List<GameObject>(subscribedGameObjects);
 
-                GameObjectsToPulse[i].Pulse();
+            foreach(GameObject gob in temporaryGameObjects)
+            {
+                if(subscribedGameObjects.Contains(gob))
+                {
+                    foreach(GameComponent comp in gob.MyGameComponents)
+                    {
+                        comp.Pulse();
+                    }
+
+                    gob.Pulse();
+                }
             }
             
             TickCount++;
             LastTickTime = DateTime.Now;
+        }
+
+        public void Subscribe(GameObject gob)
+        {
+            subscribedGameObjects.Add(gob);
+        }
+
+        public void Unsubscribe(GameObject gob)
+        {
+            subscribedGameObjects.Remove(gob);
         }
     }
 }

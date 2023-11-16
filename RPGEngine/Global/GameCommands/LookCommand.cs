@@ -1,4 +1,5 @@
 ﻿using RPGEngine.Global.GameObjects;
+using RPGEngine.Global.Helpers;
 using RPGEngine.Global.Networking;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,26 @@ namespace RPGEngine.Global.GameCommands
         {
             if(actor is Player player)
             {
-                player.MyClient.SendMessage("You look...");
+                GameRoom playerroom = player.GetCurrentRoom();
+
+                StringBuilder sb = new();
+                sb.AppendLine("You look around you and see...");
+                sb.AppendLine($"{playerroom.ShortName}");
+                sb.AppendLine($"{playerroom.Description}");
+
+                List<string> visibleRoomExits = playerroom.RoomExits
+                    .Where(exit => exit.ExitVisible)
+                    .Select(exit => exit.ExitDirection)
+                    .ToList();
+
+                if(visibleRoomExits.Count > 0)
+                {
+                    string formattedExits = TextFormatter.FormatListWithCommas(visibleRoomExits);
+                    
+                    sb.AppendLine($"You notice the following exits: {formattedExits}");
+                }
+
+                player.MyClient.SendMessage(sb.ToString());
             }
         }
     }

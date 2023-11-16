@@ -21,7 +21,7 @@ namespace RPGEngine.Global.Networking.Communications
     {
         #region Singleton
         //Singleton Instance of the TelnetServer
-        private static readonly Lazy<TelnetServer> _instance = new Lazy<TelnetServer>(() => new TelnetServer(23));
+        private static readonly Lazy<TelnetServer> _instance = new Lazy<TelnetServer>(() => new TelnetServer(4030));
         public static readonly TelnetServer Instance = _instance.Value;
         #endregion
 

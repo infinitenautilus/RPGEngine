@@ -12,6 +12,8 @@ namespace RPGEngine.Global.GameObjects
 
         public string ExitFile { get; set; }
 
+        public bool ExitVisible { get; set; }
+
         public RoomExit(string exitdir, string exitfile)
         {
             ExitDirection = exitdir;

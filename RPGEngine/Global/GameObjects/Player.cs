@@ -20,10 +20,16 @@ namespace RPGEngine.Global.GameObjects
         {
             MyClient = client;
 
-            HealthComponent.MaxHealth = 1000;
-            HealthComponent.CurrentHealth = 1000;
+            HealthComponent.MaxHealth = 10;
+            HealthComponent.CurrentHealth = 1;
 
             PlayerManager.Instance.AddPlayerToConnected(this, client);
+        }
+
+        ~Player()
+        {
+            MyClient.CloseConnection();
+            PlayerManager.Instance.RemovePlayerFromConnected(this);
         }
 
         public override void Pulse()

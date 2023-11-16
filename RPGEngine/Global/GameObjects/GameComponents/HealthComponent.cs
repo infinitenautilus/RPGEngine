@@ -43,8 +43,6 @@ namespace RPGEngine.Global.GameObjects.GameComponents
             {
                 CurrentHealth++;
             }
-
-            Console.WriteLine($"Pulse on health component called: {CurrentHealth}");
         }
     }
 }

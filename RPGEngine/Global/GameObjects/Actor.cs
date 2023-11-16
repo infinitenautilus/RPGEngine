@@ -28,7 +28,7 @@ namespace RPGEngine.Global.GameObjects
 
         public override void Pulse()
         {
-            Console.WriteLine($"PULSE() called on Actor {ShortName}");
+
         }
 
         private void AddComponents()
